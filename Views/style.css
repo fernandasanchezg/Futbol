@@ -1,0 +1,19 @@
+body{
+    background-color: aqua;
+}
+ h1{
+     font-size: 460%;
+     color: aliceblue;
+     padding: 10px;
+ }
+
+ p{
+     font-size: 250%;
+     color: aliceblue;
+ }
+
+ button{
+     width: 130px;
+     height: 50px;
+     padding: 5px;
+ }

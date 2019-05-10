@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Ligas de futbol</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <h1 class="text-center">Ligas de futbol</h1>
+
+
+    <div id="appLigas" class="col-md-12">
+
+        <form class="form-group">
+            <label class="input-group">
+                <input class="form-control col-md-6" v-model="nombreLiga" placeholder="Nombre liga">
+                <input class="form-control col-md-6" v-model="paisLiga" placeholder="Pais liga">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success btn-lg" type="submit" @click="crearLiga">Crear</button>
+                </div>
+            </label>
+            <label class="input-group">
+                <input class="form-control col-md-4" v-model="liga_id" placeholder="Id liga">
+                <input class="form-control col-md-4" v-model="nombreLiga" placeholder="Nombre liga">
+                <input class="form-control col-md-4" v-model="paisLiga" placeholder="Pais liga">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-info btn-lg" @click="actualizarLiga(liga_id)">Actualizar</button>
+                </div>
+            </label>
+            <label class="input-group">
+                <input class="form-control col-md-12" v-model="liga_id" placeholder="Id liga">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-danger btn-lg" @click="eliminarLiga(liga_id)">Eliminar</button>
+                </div>
+            </label>
+        </form>
+
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>País</th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr v-for="liga in ligas">
+                    <td>{{liga._id}}</td>
+                    <td>{{liga.nombre}} </td>
+                    <td>{{liga.pais}} </td>                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<script>
+    const api = 'http://localhost:3000/api/liga/'
+
+    new Vue({
+        el: "#appLigas",
+        data() {
+            return {
+                liga_id: '',
+                nombreLiga: '',
+                paisLiga: '',
+                ligas: []
+            }
+            
+        },
+        beforeMount() {
+            this.verLigas()
+        },
+        methods: {
+            verLigas() {
+                let self = this
+                axios.get(api).then(function (res) {
+                    self.ligas = JSON.parse(JSON.stringify(res.data))
+                    console.log(self.ligas)
+                    
+                    
+                }).catch(function (err) {
+                    console.log(err)
+                })
+            },
+            crearLiga() {
+                axios.post(api, {
+                    nombre: this.nombreLiga,
+                    pais: this.paisLiga
+                }).then(function (res) {
+                    this.Ligas = res.data
+                }).catch(function (err) {
+                    console.log(err)
+                })
+            },
+            eliminarLiga(liga_id) {
+                axios.delete(api + liga_id, {
+                    _id: this.liga_id,
+                    nombre: this.nombreLiga,
+                    pais: this.paisLiga
+                }).then(function (res) {
+                    console.log(res)
+                }).catch(function (err) {
+                    console.log(err)
+                })
+            },
+            actualizarLiga(liga_id) {
+                axios.put(api + liga_id, {
+                    _id: this.liga_id,
+                    nombre: this.nombreLiga,
+                    pais: this.paisLiga
+                }).then(function (res) {
+                    console.log(res)
+                }).catch(function (err) {
+                    console.log(err)
+                })
+            }
+        }
+    })
+
+</script>
+
+</html>

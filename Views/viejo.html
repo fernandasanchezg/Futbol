@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jugadores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="appJugadores" class="container">
+        <!-- Formulario para añadir Jugadores -->
+        
+        <section class="form">
+            
+            <form action="" class="text-center">      <select v-model="selected">
+                    <option v-for="atem in aEquipo " v-bind:value="atem.nombre">
+                      {{ atem.nombre }}
+                    </option>
+                  </select>
+        <span>Selected: {{ selected }}</span>          
+                <input v-model="nombre" @keyup.enter="crearJugador" type="text" class="form-control"
+                    placeholder="Nombre">
+                <input v-model="edad" @keyup.enter="crearJugador" type="number" name="edad" placeholder="Edad"
+                    class="form-control">
+                <input v-model="equipo" @keyup.enter="crearJugador" type="text" class="form-control"
+                    placeholder="Equipo">
+                <input v-model="goles" @keyup.enter="crearJugador" type="number" name="goles" placeholder="Goles"
+                    class="form-control">
+                <input v-model="posicion" @keyup.enter="crearJugador" type="text" class="form-control"
+                    placeholder="posicion">
+                <!-- Botón para añadir -->
+                <input @click="crearJugador" type="button" value="Añadir" class="btn btn-success">
+            </form>
+        </section>
+        <!-- Tabla donde se muestran los datos -->
+        <section class="data">
+            <caption>Jugadores</caption>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Edad</th>
+                        <th scope="col">Equipo</th>
+                        <th scope="col">Goles</th>
+                        <th scope="col">Posicion</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(Jugador, index) in Jugadores">
+                        <td>{{ Jugador.id }}</td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <!-- Formulario para actualizar -->
+                                <input v-model="nombreActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+                                <!-- Dato nombre -->
+                                {{ Jugador.nombre }}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <!-- Formulario para actualizar -->
+                                <input v-model="edadActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+                                <!-- Dato edad -->
+                                {{ Jugador.edad }}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <!-- Formulario para actualizar -->
+                                <input v-model="equipoActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+                                <!-- Dato nombre -->
+                                {{ Jugador.equipo }}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <!-- Formulario para actualizar -->
+                                <input v-model="golesActaulizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+                                <!-- Dato edad -->
+                                {{ Jugador.goles }}                                
+                            </span>
+                        </td>
+                        
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <!-- Formulario para actualizar -->
+                                <input v-model="posicionActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+                                <!-- Dato nombre -->
+                                {{ Jugador.posicion }}
+                            </span>
+                             <!-- Botón para guardar la información actualizada -->
+                        <span v-if="formActualizar && idActualizar == index">
+                                <button @click="guardarActualizacion(index)" class="btn btn-success">Guardar</button>
+                            </span>
+                            <span v-else>
+                                <!-- Botón para mostrar el formulario de actualizar -->
+                                <button @click="verFormActualizar(index)" class="btn btn-warning">Actualizar</button>
+                                <!-- Botón para borrar -->
+                                <button @click="borrarJugador(index)" class="btn btn-danger">Borrar</button>
+                            </span>
+                                         
+                       
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Vue({
+                el: '#appJugadores',
+                mounted(){
+                    this.llenar();
+                },
+
+                data: {
+                    // Input nombre
+                    nombre: '',
+                    // Input edad
+                    edad: '',
+
+                    equipo:'',
+
+                    goles:'',
+
+                    posicion: '',
+                    // Ver o no ver el formulario de actualizar
+                    formActualizar: false,
+                    // La posición de tu lista donde te gustaría actualizar 
+                    idActualizar: -1,
+                    // Input nombre dentro del formulario de actualizar
+                    nombreActualizar: '',
+                    // Input edad dentro del formulario de actualizar
+                    edadActualizar: '',
+
+                    equipoActualizar:'',
+
+                    golesActaulizar:'',
+
+                    posicionActualizar:'',
+                    // Lista de Jugadores
+                    Jugadores: [],
+                    // arreglo que recibe equipos
+                    aEquipo:[],
+
+                    selected:''
+                    
+                         
+                    
+                },
+                methods: {
+                    crearJugador: function () {
+                        // Anyadimos a nuestra lista
+                        this.Jugadores.push({
+                            id: + new Date(),
+                            nombre: this.nombre,
+                            edad:this.edad,
+                            equipo:this.selected,                           
+                            goles:this.goles,
+                            posicion:this.posicion
+                           
+                        });
+                        // Vaciamos el formulario de añadir
+                        this.nombre = '';
+                        this.edad = '';
+                        this.posicion = '';
+                        this.equipo ='';
+                        this.goles = '';
+                    },
+                    verFormActualizar: function (Jugador_id) {
+                        // Antes de mostrar el formulario de actualizar, rellenamos sus campos
+                        this.idActualizar = Jugador_id;
+                        this.nombreActualizar = this.Jugadores[Jugador_id].nombre;
+                        this.edadActualizar = this.Jugadores[Jugador_id].edad;
+                        this.equipoActualizar = this.Jugadores[Jugador_id].equipo;
+                        this.golesActaulizar = this.Jugadores[Jugador_id].goles;
+                        this.posicionActualizar = this.Jugadores[Jugador_id].posicion;
+                        // Mostramos el formulario
+                        this.formActualizar = true;
+                    },
+                    borrarJugador: function (Jugador_id) {
+                        // Borramos de la lista
+                        this.Jugadores.splice(Jugador_id, 1);
+                    },
+                    guardarActualizacion: function (Jugador_id) {
+                        // Ocultamos nuestro formulario de actualizar
+                        this.formActualizar = false;
+                        // Actualizamos los datos
+                        this.Jugadores[Jugador_id].nombre = this.nombreActualizar;
+                        this.Jugadores[Jugador_id].edad = this.edadActualizar;
+                        this.Jugadores[Jugador_id].equipo = this.equipoActualizar;
+                        this.Jugadores[Jugador_id].goles = this.golesActaulizar;
+                        this.Jugadores[Jugador_id].posicion = this.posicionActualizar;
+                        
+                    },
+                    llenar:function(){
+                       
+                        this.aEquipo = JSON.parse(localStorage.getItem('Equipos'))
+                       console.log(this.aEquipo)
+                    }
+
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
