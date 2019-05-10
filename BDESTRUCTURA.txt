@@ -1,0 +1,9 @@
+Base de datos
+equipo
+{"_id":"5cd2eee0e6712084c0f86d15","nombreequipo":"Real Madrid","paisequipo":"España","nombretecnico":"Zidane"}
+
+jugador
+{"_id":"5cd314da74359e2dc03121ac","nombrejugador":"Isco","edadjugador":27,"equipojugador":"Real MAdrid","golesjugador":5,"posicionjugador":"Mediocentro"}
+
+liga
+{"_id":"5cd30e0527b99c274c7fb2c2","nombre":"La Liga","pais":"España"}
